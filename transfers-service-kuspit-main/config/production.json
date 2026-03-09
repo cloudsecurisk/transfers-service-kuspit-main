@@ -1,0 +1,82 @@
+{
+  "DBConfig": {
+    "DB_API_SHCEMA": "transfers-prod",
+    "DB_API_HOST": "192.168.80.7",
+    "DB_API_HOST_REPLICA1": "192.168.80.9",
+    "DB_API_USER": "transfers-prod-user",
+    "DB_API_USER_REPLICA1": "transfers-prod-user"
+  },
+  "server": {
+    "port": 3000,
+    "baseUrl": "api"
+  },
+  "cors": {
+    "origin": ["https://dash.espiralapp.com", "https://dashboard-web-1028824665854.us-central1.run.app"],
+    "credentials": true,
+    "allowedHeaders": ["Content-Type", "Authorization", "espiral-device", "espiral-origin"],
+    "methods": ["GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"]
+  },
+  "belugaOauth": {
+    "base": "https://oauth.espiralapp.com",
+    "url": "https://oauth.espiralapp.com/oauth/permission"
+  },
+  "report": {
+    "baseURL": "https://reports.espiralapp.com/"
+  },
+  "logsService": {
+    "url": "https://logs.espiralapp.com",
+    "key": "b40c55.3c95ce8e-48b1-4f71-91bb-ab069e4fca55"
+  },
+  "registerCommerceService": {
+    "url": "https://registercommerce.espiralapp.com"
+  },
+  "bucketDispersion": {
+    "name": "transfer-docs",
+    "keyFilename": "/var/www/html/ecommerce-api/ecommerce.buckets.account.json",
+    "projectId": "beluga-development",
+    "url": "https://storage.googleapis.com/transfer-docs",
+    "path": "multipleDispersion/"
+  },
+  "apikey": {
+    "saltRounds": 10
+  },
+  "GCP": {
+    "secretManager": {
+      "projectId": "289854987617",
+      "version": "latest",
+      "secretPath": "projects/${projectId}/secrets/${secretName}/versions/${version}",
+      "secretNames": {
+        "DB_PASSWORD": "TRANSFER_PRODUCTION_PASSWORD",
+        "DB_PASSWORD_REPLICA1": "TRANSFER_PRODUCTION_PASSWORD_REPLICA1",
+        "DB_CERT": "TRANSFER_PRODUCTION_CERT",
+        "DB_KEY": "TRANSFER_PRODUCTION_KEY",
+        "DB_CA": "TRANSFER_PRODUCTION_CA",
+        "DB_CERT_REPLICA1": "TRANSFER_PRODUCTION_CERT_REPLICA1",
+        "DB_KEY_REPLICA1": "TRANSFER_PRODUCTION_KEY_REPLICA1",
+        "DB_CA_REPLICA1": "TRANSFER_PRODUCTION_CA_REPLICA1",
+        "ESPIRAL_PRIVATE_KEY_OPM": "OPM_PRIVATE_KEY_PRODUCTION",
+        "ESPIRAL_PUBLIC_KEY_OPM": "OPM_PUBLIC_KEY_PRODUCTION",
+        "OPM_APIKEY": "OPM_APIKEY_PRODUCTION"
+      }
+    }
+  },
+  "opm": {
+    "url": "http://10.100.0.5",
+    "businessName": "ESPIRAL_OPM",
+    "nombreOrdenante": "OPM",
+    "cuentaOrdenante": "684180163000000005",
+    "opmCode": "684",
+    "subsidiaryDigits": "180",
+    "integratorDigits": "163",
+    "rfcCurpOrdenante": "ND",
+    "tipoCuentaOrdenante": "40"
+  },
+  "transferApi": {
+    "base": "https://stp.espiralapp.com"
+  },
+  "apikeyTransfer": "62fef1.f7794271-8dee-48e1-9aee-2574b10f74c5",
+  "emailService": {
+    "base": "https://email.espiralapp.com",
+    "apikey": "2bd602.a58414f0-b169-42b6-8e65-73279263d703"
+  }
+}

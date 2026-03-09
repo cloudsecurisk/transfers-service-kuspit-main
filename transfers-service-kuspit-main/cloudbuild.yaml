@@ -1,0 +1,54 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-f",
+        "Dockerfile.prod",
+        "-t",
+        "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:v1.0.0",
+        ".",
+      ]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:v1.0.0",
+      ]
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      [
+        "run",
+        "deploy",
+        "kuspit-service",
+        "--ingress=internal-and-cloud-load-balancing",
+        "--image",
+        "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:v1.0.0",
+        "--allow-unauthenticated",
+        "--port=3000",
+        "--vpc-connector=projects/vpc-host-prod-wq299-gq507/locations/us-central1/connectors/svpca-uscentral1-prod",
+        "--vpc-egress=private-ranges-only",
+        "--region=us-central1",
+        "--project=espiral-stee-kuspit-prd",
+        "--set-secrets=NODE_ENV=NODE_ENV:1",
+      ]
+    secretEnv:
+      - NODE_ENV
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/1053806757419/secrets/NODE_ENV/versions/1
+      env: NODE_ENV
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _REGION: "us-central1"
+  _REPOSITORY: "kuspit"
+  _IMAGE: "kuspit-image"
+
+images:
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:v1.0.0"

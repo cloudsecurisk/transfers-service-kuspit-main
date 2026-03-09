@@ -1,0 +1,35 @@
+{
+  "server": {
+    "port": 3000,
+    "baseUrl": "api"
+  },
+  "cors": {
+    "origin": "*",
+    "domain": "localhost",
+    "credentials": true,
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH",
+      "DELETE",
+      "PUT"
+    ]
+  },
+  "belugaOauth": {
+    "base": "http://beluga-oauth-api:3000",
+    "url": "http://beluga-oauth-api:3000/oauth/permission"
+  },
+  "report": {
+    "baseURL": "http://beluga-reports:3000/"
+  },
+  "logsService": {
+    "url": "http://log-service:3000",
+    "key": "64da29.fa7a2b57-1f47-424e-9fc2-dc4df575a26a"
+  },
+  "registerCommerceService": {
+    "url": "http://register-commerce-service:3000"
+  },
+  "apikey": {
+    "saltRounds": 10
+  }
+}

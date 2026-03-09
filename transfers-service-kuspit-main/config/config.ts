@@ -1,0 +1,51 @@
+export default {
+  dev: {
+    username: 'user',
+    password: '12345',
+    database: 'users',
+    host: 'beluga-oauth-db',
+    dialect: 'mysql',
+  },
+  migrateLocal: {
+    username: 'user',
+    password: '12345',
+    database: 'users',
+    host: 'localhost',
+    dialect: 'mysql',
+  },
+  migrate: {
+    username: process.env['DB_USER'],
+    password: process.env['DB_PASSWORD'],
+    database: process.env['DB_SCHEMA'],
+    host: process.env['DB_HOST'],
+    dialect: 'mysql',
+  },
+  staging: {
+    username: process.env['DB_USER'],
+    password: process.env['DB_PASSWORD'],
+    database: process.env['DB_SCHEMA'],
+    host: process.env['DB_HOST'],
+    dialect: 'mysql',
+  },
+  stagingEmisores: {
+    username: process.env['DB_USER'],
+    password: process.env['DB_PASSWORD'],
+    database: process.env['DB_SCHEMA'],
+    host: process.env['DB_HOST'],
+    dialect: 'mysql',
+  },
+  ci: {
+    username: 'user',
+    password: '12345',
+    database: 'users',
+    host: 'mysql',
+    dialect: 'mysql',
+  },
+  production: {
+    username: process.env['DB_USER'],
+    password: process.env['DB_PASSWORD'],
+    database: process.env['DB_SCHEMA'],
+    host: process.env['DB_HOST'],
+    dialect: 'mysql',
+  },
+}

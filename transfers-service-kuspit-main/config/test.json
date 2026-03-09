@@ -1,0 +1,60 @@
+{
+  "DBConfig": {
+    "DB_API_SHCEMA": "transfers",
+    "DB_API_HOST": "transfers-service-db",
+    "DB_API_HOST_REPLICA1": "transfers-service-db",
+    "DB_API_USER": "root",
+    "DB_API_USER_REPLICA1": "root"
+  },
+  "server": {
+    "port": 3000,
+    "baseUrl": "api"
+  },
+  "cors": {
+    "origin": "*",
+    "domain": "localhost",
+    "credentials": true,
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH",
+      "DELETE",
+      "PUT"
+    ]
+  },
+  "belugaOauth": {
+    "base": "http://beluga-oauth-api:3000",
+    "url": "http://beluga-oauth-api:3000/oauth/permission"
+  },
+  "report": {
+    "baseURL": "http://beluga-reports:3000/"
+  },
+  "logsService": {
+    "url": "http://log-service",
+    "key": "key"
+  },
+  "registerCommerceService": {
+    "url": "http://register-commerce-service:3000"
+  },
+  "apikey": {
+    "saltRounds": 10
+  },
+  "GCP": {
+    "secretManager": {
+      "projectId": "111",
+      "version": "latest",
+      "secretPath": "path/to/secret",
+      "secretNames": {
+        "KEY_PASSWORD": "pass",
+        "DB_PASSWORD": "db123",
+        "DB_PASSWORD_REPLICA1": "123",
+        "DB_CERT": "",
+        "DB_KEY": "",
+        "DB_CA": "",
+        "DB_CERT_REPLICA1": "",
+        "DB_KEY_REPLICA1": "",
+        "DB_CA_REPLICA1": ""
+      }
+    }
+  }
+}

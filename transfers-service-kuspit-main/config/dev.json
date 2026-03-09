@@ -1,0 +1,89 @@
+{
+  "DBConfig": {
+    "DB_API_SHCEMA": "transfers",
+    "DB_API_HOST": "transfers-service-db",
+    "DB_API_HOST_REPLICA1": "transfers-service-db",
+    "DB_API_USER": "root",
+    "DB_API_USER_REPLICA1": "root"
+  },
+  "server": {
+    "port": 3000,
+    "baseUrl": "api"
+  },
+  "cors": {
+    "origin": "*",
+    "domain": "localhost",
+    "credentials": true,
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH",
+      "DELETE",
+      "PUT"
+    ]
+  },
+  "belugaOauth": {
+    "base": "http://beluga-oauth-api:3000",
+    "url": "http://beluga-oauth-api:3000/oauth/permission"
+  },
+  "report": {
+    "baseURL": "http://beluga-reports:3000/"
+  },
+  "logsService": {
+    "url": "http://log-service:3000",
+    "key": "64da29.fa7a2b57-1f47-424e-9fc2-dc4df575a26a"
+  },
+  "registerCommerceService": {
+    "url": "http://register-commerce-service:3000"
+  },
+  "apikey": {
+    "saltRounds": 10
+  },
+  "bucketDispersion": {
+    "name": "beluga-development",
+    "keyFilename": "/var/www/html/ecommerce-api/ecommerce.buckets.account.json",
+    "projectId": "beluga-development",
+    "url": "https://storage.googleapis.com/beluga-development",
+    "path": "/"
+  },
+  "GCP": {
+    "secretManager": {
+      "projectId": "289854987617",
+      "version": "latest",
+      "secretPath": "projects/${projectId}/secrets/${secretName}/versions/${version}",
+      "secretNames": {
+        "KEY_PASSWORD": "OGVjMzlkN2M1N",
+        "DB_PASSWORD": "12345",
+        "DB_PASSWORD_REPLICA1": "12345",
+        "DB_CERT": "",
+        "DB_KEY": "",
+        "DB_CA": "",
+        "DB_CERT_REPLICA1": "",
+        "DB_KEY_REPLICA1": "",
+        "DB_CA_REPLICA1": "",
+        "ESPIRAL_PRIVATE_KEY_OPM": "-----BEGIN RSA PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCMiGcvrz9AGukPVEI7spJNCInGVaUwhvwE8nRFQp1doMW9OmNwJdxLOsySIFpanZuLfpVqWBRlPjgjcPFuh304FfG9CmK2zv8wXBQHV9rSHNnDjHoFu48HtvP+pSR+38FopzSLPndat2W28zDKh5WRGS+AHVCu3EWgIHLYXKgDN3rhyWG7pDCjgqAw7RzXLGbzUHONgig0GMfjCO2/RHZZ7hmxaIVoeI0VQSHVnl+VFyxXfgyozq64+nMBzEqsb8J4ZUSBDOWNU5NJiva/fbUEYYWul2kMuiHwE7sHTyGKS0sUIPJdrrRfwQ4guPadQbljWJq3yuKExiTCWzW/EZNBAgMBAAECggEAF7qogbq7mV1x4O6/SEk8vtkkOmMXw3vnbgZqb49x9u9AtFT5mWQrMGC7Tik8WHSoYQN8wzogJ4A8Bm/5tEoYcLHz4ZGxXWDSYh4KG7tP7Y6FjqlXqUQkQI8539OOuAWcKMmi66geiyjQefXSVUBTlu6DwMQybXQwJXuVKMdsby5c6/lTYcip7oKZid6CCOVUo/SYhWJZBIzb3QZLoVOXNeufEHnlq9bbeKjt4z9eOnziT8B8VpH0iE/733NeC5li5aau1ciWd0VEno3u8Fif17rsTJOicDfHZ7LHqvJ1qnPu1uHVI4+g1V9LEiyx1FzdaLls4IBUMLeMz34OMJD5gQKBgQDFhbZ1BLl/UU6doM8HjpBY4KLSzO9Xr2wY59VH1LE3es9DrNVPe5L5edkv9//xJTowBaF6MvaKeQEbRPReEAJMcI/nYh4okPb5toBS8u/xtTz34lukGpElNG0WPASEBj3YrppmZNJ508siSjB5+qaBcc4URsI8VeN8k4pgTlzi+QKBgQC2I2+048unTNLkhjcR63yyM5ejwpbUnYXyoKbi3ByChsagb/ya+v8KM+VFj2WsQQ+Jsxkid7wIEQvkT/4nNcW6h38ERpjzrXsvfH8PvEcPsG0lwMK1isru9RCodKD7sjDbru/l7ksfpFdCL6aDvGhgHQ9Stz2QRjXbhB0XLCf8iQKBgDhUc75XhJc8ltD5RVGAZMYT+htn+nHlQ0yvAPIlRAzwZx+DsKmkMjwXdcrqTQF2fmunj2+MDSdcbuZZ+d7BbgZiq4dvQe6LuQNp+pqtUaR67VI8KapZMT+M/fczUo5cQVMEKGA/LI81yV6UDdMbmlScIgtCSq5uSBwE75ebgX3xAoGBAIu5u6RlbII3qUGuxOh2Yv7CHX5/dP4+qddr7xryCN0JT68cugiarLTDAwvN6g2vC6BzSMDsYc8+ZIUN6MdjtQBXmdVJ42RsnafcNg14PnuGuPTRX42tn+iZD+JrNmRgWqLtHRSjLfZkOJyJuZAuJVQ2dt7Zu9zGP+LbAwYX1cUhAoGBAKPtCgq2AewqBTSBwLjpMzN7D1aVtfR2Yh+Sp2d4upjzMusHzlwFrZAdrMx+otf7Hp3OluatiGjGHKNMnI7tE9/wllvdjyfmj+YOeTSREWxmrFYl/E6F5RQb4Fo7oB87hgZSpntNAdbtlxZGXkNtNeOPY5WGg3f0bJRqKflJmMOm\n-----END RSA PRIVATE KEY-----",
+        "ESPIRAL_PUBLIC_KEY_OPM": "-----BEGIN RSA PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjIhnL68/QBrpD1RCO7KSTQiJxlWlMIb8BPJ0RUKdXaDFvTpjcCXcSzrMkiBaWp2bi36ValgUZT44I3Dxbod9OBXxvQpits7/MFwUB1fa0hzZw4x6BbuPB7bz/qUkft/BaKc0iz53WrdltvMwyoeVkRkvgB1QrtxFoCBy2FyoAzd64clhu6Qwo4KgMO0c1yxm81BzjYIoNBjH4wjtv0R2We4ZsWiFaHiNFUEh1Z5flRcsV34MqM6uuPpzAcxKrG/CeGVEgQzljVOTSYr2v321BGGFrpdpDLoh8BO7B08hiktLFCDyXa60X8EOILj2nUG5Y1iat8rihMYkwls1vxGTQQIDAQAB\n-----END RSA PUBLIC KEY-----",
+        "OPM_APIKEY": ""
+      }
+    }
+  },
+  "opm": {
+    "url": "http://127.0.0.1:2002",
+    "businessName": "ESPIRAL_OPM",
+    "nombreOrdenante": "OPM",
+    "cuentaOrdenante": "684180163000000005",
+    "opmCode": "684",
+    "subsidiaryDigits": "180",
+    "integratorDigits": "163",
+    "rfcCurpOrdenante": "ND",
+    "tipoCuentaOrdenante": "40"
+  },
+  "transferApi": {
+    "base": "http://transfers-service:3000"
+  },
+  "apikeyTransfer": "75f721.2b864cb3-8f9a-4ecc-9947-31039a218ada",
+  "emailService": {
+    "base": "http://beluga-email-service:3000",
+    "apikey": "68ae6a.dd6e9cee-702b-4c65-ac01-79115306474d"
+  }
+}

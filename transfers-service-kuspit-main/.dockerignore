@@ -1,0 +1,7 @@
+*
+!src
+!models
+!config
+!package.json
+!pnpm-lock.yaml
+!tsconfig.json

@@ -1,0 +1,58 @@
+# ==============================================================================
+# 1. ETAPA DE CONSTRUCCIÓN (BUILD STAGE)
+#    Se usa para instalar dependencias de desarrollo, compilar y generar 'dist'.
+# ==============================================================================
+FROM node:22-trixie AS builder
+
+# Habilitar Corepack e instalar pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Directorio de trabajo y configuración
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+
+# Instalar TODAS las dependencias (Prod y Dev)
+RUN pnpm install --frozen-lockfile
+
+# Copiar el código fuente y el archivo de configuración de TypeScript
+COPY . .
+
+# Ejecutar el script de construcción para generar la carpeta 'dist'.
+# *** ASEGÚRATE DE QUE TU TSCONFIG.JSON APUNTE A 'dist' ***
+RUN pnpm build
+
+
+# ==============================================================================
+# 2. ETAPA DE PRODUCCIÓN (PRODUCTION STAGE)
+#    Se usa para el despliegue final. Solo incluye el código compilado y dependencias de PROD.
+# ==============================================================================
+# Una imagen base más ligera (ej: 'slim' o 'alpine' si se puede)
+FROM node:22-trixie-slim
+
+# Habilitar pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Crear el directorio de trabajo
+WORKDIR /app
+
+# 1. Copiar SOLO el código compilado (el resultado del paso 'build').
+COPY --from=builder /app/dist ./dist
+
+# 2. Copiar los archivos de configuración necesarios para producción.
+COPY package.json pnpm-lock.yaml ./
+
+COPY . .
+
+# 3. Instalar SOLO las dependencias de producción.
+RUN pnpm install --prod --frozen-lockfile
+
+# --- Seguridad (Recomendado para Cloud Run) ---
+# Cambiar a un usuario no root para la ejecución.
+USER node
+
+# El puerto que escuchará la aplicación (Cloud Run inyectará la variable $PORT)
+EXPOSE 3000
+
+# Comando para iniciar la aplicación
+CMD ["node", "dist/src/index.js"] 
+# Nota: Ya no es necesario 'pnpm run start:prod' porque ya estamos en el entorno de producción
