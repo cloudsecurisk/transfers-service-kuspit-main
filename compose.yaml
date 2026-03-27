@@ -1,0 +1,24 @@
+services:
+  transfers-service-kuspit:
+    build: .
+    container_name: 'transfers-service-kuspit'
+    command: node --watch src/index.ts
+    environment:
+      - NODE_ENV=development
+      - google_cloud_secrets
+    ports:
+      - '3032:3000'
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+      - ./config:/app/config
+      - ./prisma:/app/prisma
+      - ./prisma.config.ts:/app/prisma.config.ts
+    networks:
+      - belugapay
+    restart: unless-stopped
+      
+networks:
+  belugapay:
+    external: true

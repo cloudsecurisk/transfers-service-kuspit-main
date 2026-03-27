@@ -1,0 +1,30 @@
+{
+  "db": {
+    "port": 3306
+  },
+  "server": {
+    "port": 3000,
+    "baseUrl": "api",
+    "testUrl": "test"
+  },
+  "cors": {
+    "origin": [
+      "https://dash.espiralapp.com",
+      "https://dashboard-web-1028824665854.us-central1.run.app"
+    ],
+    "methods": ["GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"],
+    "headers": ["Content-Type", "Authorization", "espiral-device", "espiral-origin"],
+    "credentials": true
+  },
+  "kuspit": {
+    "apiUrl": "https://preprod.kuspit.com/OpenKuspit/api",
+    "redirectUri": "http://localhost:8080",
+    "scope": "espiral_scope"
+  },
+  "oauth": {
+    "url": "http://beluga-oauth-api:3000/oauth/permission"
+  },
+  "commerce": {
+    "url": "http://register-commerce-service:3000"
+  }
+}

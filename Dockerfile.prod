@@ -1,0 +1,69 @@
+# ==============================================================================
+# 1. ETAPA DE CONSTRUCCIÓN (BUILD STAGE)
+# Se usa para instalar dependencias (incluyendo devDeps como typescript) y verificar errores de TypeScript sin emitir JS.
+# ==============================================================================
+FROM node:24-trixie AS builder
+RUN npm install -g npm@latest
+
+# Directorio de trabajo y configuración
+WORKDIR /app
+
+# Database
+COPY prisma ./prisma
+
+# Configuration Files
+COPY config ./config
+
+# Copiar archivos de paquetes y tsconfig para verificación
+COPY package.json package-lock.json tsconfig.json prisma.config.ts ./
+
+# Instalar TODAS las dependencias
+RUN npm install
+
+RUN npx prisma generate
+
+# Copiar el código fuente
+COPY src ./src
+
+# Ejecutar el script de verificación de TypeScript.
+RUN npm run build
+
+
+# ==============================================================================
+# 2. ETAPA DE PRODUCCIÓN (PRODUCTION STAGE)
+# Imagen ligera, solo código TS necesario y deps de prod. Ejecuta .ts nativamente.
+# ==============================================================================
+# Una imagen base más ligera (ej: 'slim' o 'alpine' si se puede)
+FROM node:24-trixie-slim
+RUN npm install -g npm@latest
+
+# Crear el directorio de trabajo
+WORKDIR /app
+
+# Copiar archivos de paquetes desde builder (para cacheo)
+COPY --from=builder /app/package.json /app/package-lock.json ./
+
+# Instalar SOLO las dependencias de producción.
+RUN npm install --omit=dev
+
+# Copiar el código TS verificado (solo src, no todo el repo para optimizar)
+COPY --from=builder /app/src ./src
+
+# Copiar los archivos para Prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/prisma ./prisma
+
+# Copiar la configuración
+COPY --from=builder /app/config ./config
+
+
+# --- Seguridad (Recomendado para Cloud Run) ---
+# Cambiar a un usuario no root para la ejecución.
+USER node
+
+# El puerto que escuchará la aplicación (Cloud Run inyectará la variable $PORT)
+EXPOSE 3000
+
+# Comando para iniciar la aplicación
+# En la etapa final de tu Dockerfile
+CMD node src/index.ts

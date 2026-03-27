@@ -1,0 +1,302 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model account {
+  id                  Int               @id @default(autoincrement()) @db.UnsignedInt
+  idDistributor       Int?              @db.UnsignedInt
+  idExecutive         Int?              @db.UnsignedInt
+  idCommerce          Int?
+  idPlan              Int               @default(2) @db.UnsignedInt
+  commerceName        String?           @db.VarChar(45)
+  bankAccount         String?           @db.VarChar(45)
+  bankAccountOwner    String?           @db.VarChar(45)
+  balance             Decimal           @default(0.00000000) @db.Decimal(22, 8)
+  pendingCharges      Decimal           @default(0.00000000) @db.Decimal(22, 8)
+  balanceLimit        Decimal           @default(3000000) @db.Decimal(22, 0)
+  balanceLimitMonthly Decimal           @default(3000000) @db.Decimal(22, 0)
+  limitPerDeposit     Decimal           @default(950000) @db.Decimal(22, 0)
+  limitPerWithdrawal  Decimal           @default(250000) @db.Decimal(22, 0)
+  cutOffDay           Int               @default(1)
+  commissionAmount    Decimal           @default(0.00) @db.Decimal(16, 2)
+  service24           Int               @default(0) @db.TinyInt
+  freezeBalanceHours  Int               @default(24)
+  createdAt           DateTime          @default(now()) @db.DateTime(0)
+  updatedAt           DateTime          @default(now()) @db.DateTime(0)
+  deletedAt           DateTime?         @db.DateTime(6)
+  plans               plans             @relation(fields: [idPlan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_plans")
+  accountSetting      accountSetting[]
+  distributors        distributors[]
+  savedAccounts       savedAccounts[]
+  stpAccountClabe     stpAccountClabe[]
+
+  @@index([idPlan], map: "fk_account_plans_idx")
+}
+
+model accountSetting {
+  id                Int       @id @default(autoincrement()) @db.UnsignedInt
+  idAccount         Int       @db.UnsignedInt
+  emailNotification String?   @db.VarChar(100)
+  maxWithdrawal     Decimal?  @db.Decimal(22, 8)
+
+  kuspitAuthCode       String?   @db.VarChar(100)
+  kuspitAccessToken    String?   @db.Text
+  kuspitRefreshToken   String?   @db.VarChar(255)
+  kuspitTokenExpiresAt DateTime? @db.DateTime(0)
+  kuspitContractId     Int?      @db.UnsignedInt
+
+  createdAt         DateTime  @default(now()) @db.DateTime(0)
+  updatedAt         DateTime  @default(now()) @db.DateTime(0)
+  deletedAt         DateTime? @db.DateTime(6)
+  account           account   @relation(fields: [idAccount], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_accountSetting")
+
+  @@index([idAccount], map: "fk_account_accountSetting_idx")
+}
+
+model bankingSourceRate {
+  id                             Int       @id @default(autoincrement()) @db.UnsignedInt
+  idPlan                         Int       @db.UnsignedInt
+  dispersionFree                 Int       @default(1) @db.TinyInt
+  porcentage                     Int?      @db.TinyInt
+  cashIn                         Int       @default(1) @db.TinyInt
+  cashOut                        Int       @default(1) @db.TinyInt
+  speiComission                  Decimal   @db.Decimal(16, 6)
+  espiralComission               Decimal   @db.Decimal(16, 6)
+  espiralComissionPercentage     Decimal   @default(0.00000) @db.Decimal(6, 5)
+  minTransactionCost             Decimal   @db.Decimal(16, 2)
+  maxTransactionCost             Decimal?  @db.Decimal(16, 2)
+  realSpeiComission              Decimal   @db.Decimal(16, 6)
+  realEspiralComission           Decimal   @db.Decimal(16, 6)
+  realEspiralComissionPercentage Decimal   @default(0.00000) @db.Decimal(6, 5)
+  speiCost                       Decimal   @default(5.00) @db.Decimal(16, 2)
+  createdAt                      DateTime  @default(now()) @db.DateTime(0)
+  updatedAt                      DateTime  @default(now()) @db.DateTime(0)
+  deletedAt                      DateTime? @db.DateTime(0)
+  plans                          plans     @relation(fields: [idPlan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_plans_ bankingSourceRate")
+
+  @@index([idPlan], map: "fk_plans_ bankingSourceRate_idx")
+}
+
+model causesOfReturn {
+  id          Int        @id @default(autoincrement()) @db.UnsignedInt
+  errorType   Int        @default(1)
+  code        String?    @db.VarChar(45)
+  description String?    @db.VarChar(100)
+  createdAt   DateTime   @default(now()) @db.DateTime(0)
+  updatedAt   DateTime   @default(now()) @db.DateTime(0)
+  deletedAt   DateTime?  @db.DateTime(6)
+  movement    movement[]
+}
+
+model clabe {
+  id                                         Int               @id @default(autoincrement()) @db.UnsignedInt
+  idCostCenter                               Int?              @db.UnsignedInt
+  clabe                                      String?           @db.VarChar(20)
+  idInstitution                              Int?              @db.UnsignedInt
+  idClabeType                                Int?              @db.UnsignedInt
+  ownerName                                  String?           @db.VarChar(75)
+  ownerRfcCurp                               String?           @db.VarChar(45)
+  cashInDisabled                             Int               @default(0) @db.TinyInt
+  cashOutDisabled                            Int               @default(0) @db.TinyInt
+  createdAt                                  DateTime          @default(now()) @db.DateTime(0)
+  updatedAt                                  DateTime          @default(now()) @db.DateTime(0)
+  deletedAt                                  DateTime?         @db.DateTime(6)
+  clabeType                                  clabeType?        @relation(fields: [idClabeType], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_clabe_clabeType")
+  costCenter                                 costCenter?       @relation(fields: [idCostCenter], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_clabe_costCenter")
+  institution                                institution?      @relation(fields: [idInstitution], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_clabe_institution")
+  clabeBlackList                             clabeBlackList[]
+  movement_movement_idReceiverClabeToclabe   movement[]        @relation("movement_idReceiverClabeToclabe")
+  movement_movement_idReceiverClable2Toclabe movement[]        @relation("movement_idReceiverClable2Toclabe")
+  movement_movement_idSenderClabeToclabe     movement[]        @relation("movement_idSenderClabeToclabe")
+  savedAccounts                              savedAccounts[]
+  stpAccountClabe                            stpAccountClabe[]
+
+  @@index([idClabeType], map: "fk_clabe_clabeType_idx")
+  @@index([idCostCenter], map: "fk_clabe_costCenter_idx")
+  @@index([idInstitution], map: "fk_clabe_institution_idx")
+}
+
+model clabeBlackList {
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
+  idClabe   Int       @db.UnsignedInt
+  createdAt DateTime  @default(now()) @db.DateTime(0)
+  updatedAt DateTime  @default(now()) @db.DateTime(0)
+  deletedAt DateTime? @db.DateTime(6)
+  clabe     clabe     @relation(fields: [idClabe], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "clabeBlackListClabe")
+
+  @@index([idClabe], map: "clabeBlackListClabe_idx")
+}
+
+model clabeType {
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
+  code      Int?
+  name      String?   @db.VarChar(45)
+  updatedAt DateTime  @default(now()) @db.DateTime(0)
+  deletedAt DateTime? @db.DateTime(6)
+  clabe     clabe[]
+}
+
+model costCenter {
+  id            Int       @id @default(autoincrement()) @db.UnsignedInt
+  idBank        Int       @default(1) @db.UnsignedInt
+  name          String?   @db.VarChar(45)
+  socialReason  String?   @db.VarChar(40)
+  clabe         String?   @unique(map: "clabe_UNIQUE") @db.VarChar(18)
+  company       String?   @db.VarChar(10)
+  code          String?   @unique(map: "code_UNIQUE") @db.VarChar(7)
+  createdAt     DateTime  @default(now()) @db.DateTime(0)
+  updatedAt     DateTime  @default(now()) @db.DateTime(0)
+  deletedAt     DateTime? @db.DateTime(6)
+  clabes        clabe[]
+}
+
+model distributors {
+  id                   Int       @id @default(autoincrement()) @db.UnsignedInt
+  idUser               Int       @db.UnsignedInt
+  name                 String?   @db.VarChar(45)
+  percentage           Decimal?  @default(0.00) @db.Decimal(16, 2)
+  fixedPricePercentage Decimal?  @default(0.00) @db.Decimal(16, 2)
+  idAccount            Int       @db.UnsignedInt
+  createdAt            DateTime  @default(now()) @db.DateTime(0)
+  updatedAt            DateTime  @default(now()) @db.DateTime(0)
+  deletedAt            DateTime? @db.DateTime(0)
+  account              account   @relation(fields: [idAccount], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_distributor_account")
+
+  @@index([idAccount], map: "fk_distributor_account_idx")
+}
+
+model institution {
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
+  code      Int?
+  name      String?   @db.VarChar(45)
+  createdAt DateTime  @default(now()) @db.DateTime(0)
+  updatedAt DateTime  @default(now()) @db.DateTime(0)
+  deletedAt DateTime? @db.DateTime(6)
+  clabe     clabe[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model movement {
+  id                                      Int             @id @default(autoincrement()) @db.UnsignedInt
+  idAccount                               Int?            @db.UnsignedInt
+  idUser                                  Int?            @db.UnsignedInt
+  idMovementType                          Int?            @db.UnsignedInt
+  idMovementStatus                        Int?            @db.UnsignedInt
+  idStp                                   Int?
+  idMovementBank                          String?         @db.VarChar(45)
+  idCauseOfReturn                         Int?            @db.UnsignedInt
+  idSenderClabe                           Int             @db.UnsignedInt
+  idReceiverClabe                         Int             @db.UnsignedInt
+  idReceiverClable2                       Int?            @db.UnsignedInt
+  dateOfTransaction                       String?         @db.VarChar(45)
+  trackingKey                             String?         @db.VarChar(45)
+  amount                                  Decimal         @db.Decimal(18, 4)
+  paymentConcept                          String          @db.VarChar(45)
+  paymentConcept2                         String?         @db.VarChar(45)
+  reference                               String          @db.VarChar(45)
+  business                                String          @db.VarChar(45)
+  paymentType                             Int?            @db.UnsignedInt
+  paymentTime                             String?         @db.VarChar(45)
+  codiInvoice                             String?         @db.VarChar(45)
+  commission                              Decimal?        @db.Decimal(16, 8)
+  realCommission                          Decimal?        @db.Decimal(16, 8)
+  commissionDistributor                   Decimal?        @db.Decimal(16, 8)
+  utility                                 Decimal?        @db.Decimal(16, 8)
+  realUtility                             Decimal?        @db.Decimal(16, 8)
+  deposit                                 Decimal?        @db.Decimal(16, 8)
+  currentBalance                          Decimal         @default(0.00000000) @db.Decimal(16, 8)
+  createdAt                               DateTime        @default(now()) @db.DateTime(0)
+  updatedAt                               DateTime        @default(now()) @db.DateTime(0)
+  deletedAt                               DateTime?       @db.DateTime(6)
+  latitud                                 String?         @db.VarChar(45)
+  longitud                                String?         @db.VarChar(45)
+  causesOfReturn                          causesOfReturn? @relation(fields: [idCauseOfReturn], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_movement_causeReturn_idx")
+  movementStatus                          movementStatus? @relation(fields: [idMovementStatus], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_movement_movementStatus")
+  movementType                            movementType?   @relation(fields: [idMovementType], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_movement_movementType")
+  paymentTypes                            paymentTypes?   @relation(fields: [paymentType], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_movement_paymentType")
+  receiverClabe                           clabe           @relation("movement_idReceiverClabeToclabe", fields: [idReceiverClabe], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_movement_receiverClabe")
+  receiverClabe2                          clabe?          @relation("movement_idReceiverClable2Toclabe", fields: [idReceiverClable2], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_movement_receiverClabe2")
+  senderClabe                             clabe           @relation("movement_idSenderClabeToclabe", fields: [idSenderClabe], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_movement_senderClabe")
+
+  @@index([idCauseOfReturn], map: "fk_movement_causeReturn_idx")
+  @@index([idSenderClabe], map: "fk_movement_institutions_idx")
+  @@index([idMovementStatus], map: "fk_movement_movementStatus_idx")
+  @@index([idMovementType], map: "fk_movement_movementType_idx")
+  @@index([paymentType], map: "fk_movement_paymentType_idx")
+  @@index([idReceiverClable2], map: "fk_movement_receiverClabe2_idx")
+  @@index([idReceiverClabe], map: "fk_movement_receiverInstute_idx")
+}
+
+model movementStatus {
+  id          Int        @id @default(autoincrement()) @db.UnsignedInt
+  name        String?    @db.VarChar(45)
+  description String?    @db.VarChar(45)
+  createdAt   DateTime   @default(now()) @db.DateTime(0)
+  updatedAt   DateTime   @default(now()) @db.DateTime(0)
+  deletedAt   DateTime?  @db.DateTime(6)
+  movement    movement[]
+}
+
+model movementType {
+  id          Int        @id @default(autoincrement()) @db.UnsignedInt
+  name        String?    @db.VarChar(45)
+  description String?    @db.VarChar(45)
+  createdAt   DateTime   @default(now()) @db.DateTime(0)
+  updatedAt   DateTime   @default(now()) @db.DateTime(0)
+  deletedAt   DateTime?  @db.DateTime(6)
+  movement    movement[]
+}
+
+model paymentTypes {
+  id        Int        @id @default(autoincrement()) @db.UnsignedInt
+  name      String     @db.VarChar(45)
+  createdAt DateTime   @default(now()) @db.DateTime(0)
+  updatedAt DateTime   @default(now()) @db.DateTime(0)
+  deletedAt DateTime?  @db.DateTime(6)
+  movement  movement[]
+}
+
+model plans {
+  id                Int                 @id @default(autoincrement()) @db.UnsignedInt
+  name              String?             @db.VarChar(100)
+  commissionAmount  Decimal             @default(0.00) @db.Decimal(16, 2)
+  payday            Int?
+  createdAt         DateTime            @default(now()) @db.DateTime(0)
+  updatedAt         DateTime            @default(now()) @db.DateTime(0)
+  deletedAt         DateTime?           @db.DateTime(0)
+  account           account[]
+  bankingSourceRate bankingSourceRate[]
+}
+
+model savedAccounts {
+  idAccount        Int       @db.UnsignedInt
+  idClabe          Int       @db.UnsignedInt
+  kuspitProviderId Int?      @db.UnsignedInt
+  createdAt        DateTime  @default(now()) @db.DateTime(0)
+  updatedAt        DateTime  @default(now()) @db.DateTime(0)
+  deletedAt        DateTime? @db.DateTime(6)
+  account          account   @relation(fields: [idAccount], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "account_savedAccount")
+  clabe            clabe     @relation(fields: [idClabe], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "clabe_savedAccount")
+
+  @@id([idAccount, idClabe])
+  @@index([idClabe], map: "clabe_savedAccount_idx")
+}
+
+model stpAccountClabe {
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
+  idAccount Int       @db.UnsignedInt
+  idClabe   Int       @db.UnsignedInt
+  createdAt DateTime  @default(now()) @db.DateTime(0)
+  updatedAt DateTime  @default(now()) @db.DateTime(0)
+  deletedAt DateTime? @db.DateTime(6)
+  account   account   @relation(fields: [idAccount], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ stpAccountClabe_account")
+  clabe     clabe     @relation(fields: [idClabe], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ stpAccountClabe_clabe")
+
+  @@index([idAccount], map: "fk_ stpAccountClabe_account_idx")
+  @@index([idClabe], map: "fk_ stpAccountClabe_clabe_idx")
+}

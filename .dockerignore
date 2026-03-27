@@ -1,0 +1,11 @@
+*
+!src
+!models
+!config
+!package.json
+!package-lock.json
+!tsconfig.json
+!tests
+!tools
+!prisma.config.ts
+!prisma

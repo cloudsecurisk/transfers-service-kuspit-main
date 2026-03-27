@@ -1,0 +1,54 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-f",
+        "Dockerfile.prod",
+        "-t",
+        "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:v1.0.0",
+        ".",
+      ]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:v1.0.0",
+      ]
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      [
+        "run",
+        "deploy",
+        "kuspit-service",
+        "--ingress=internal-and-cloud-load-balancing",
+        "--image",
+        "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:v1.0.0",
+        "--allow-unauthenticated",
+        "--port=3000",
+        "--vpc-connector=projects/vpc-host-prod-wq299-gq507/locations/us-central1/connectors/svpca-uscentral1-prod",
+        "--vpc-egress=private-ranges-only",
+        "--region=us-central1",
+        "--project=espiral-stee-kuspit-prd",
+        "--set-secrets=NODE_ENV=NODE_ENV:1,KUSPIT_ID_EMPRESA=KUSPIT_IDT_STAGING:1,KUSPIT_CLIENT_ID=KUSPIT_CLIENT_ID_STAGING:1,KUSPIT_CLIENT_SECRET=KUSPIT_CLIENT_SECRET_STAGING:1,KUSPIT_SECRET_KEY=KUSPIT_SECRET_KEY_STAGING:1,DB_HOST=DB_HOST_STAGING:latest,DB_USER=DB_USER_STAGING:latest,DB_PASSWORD=DB_PASSWORD_STAGING:latest,DB_SCHEMA=DB_SCHEMA_STAGING:latest,KUSPIT_PASSWORD_SECRET=KUSPIT_PASSWORD_SECRET_STAGING:latest",
+      ]
+    secretEnv:
+      - NODE_ENV
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/1053806757419/secrets/NODE_ENV/versions/1
+      env: NODE_ENV
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _REGION: "us-central1"
+  _REPOSITORY: "kuspit"
+  _IMAGE: "kuspit-image"
+
+images:
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:v1.0.0"
